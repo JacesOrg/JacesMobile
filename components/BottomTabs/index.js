@@ -1,6 +1,6 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Hosts from '../Hosts';
+import HostsNavigationProvider from '../Hosts';
 import Settings from '../Settings';
 import {faServer, faGear} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -14,7 +14,7 @@ export default function MainAppNavigationProvider() {
         (({route}) => ({
           tabBarIcon: ({focused}) => {
             let iconName;
-            if (route.name === 'Your Hosts') {
+            if (route.name === 'Hosts Navigator') {
               iconName = faServer;
             } else if (route.name === 'Settings') {
               iconName = faGear;
@@ -45,7 +45,7 @@ export default function MainAppNavigationProvider() {
             fontSize: 16,
         }
       }}>
-      <Tab.Screen name="Your Hosts" component={Hosts} />
+      <Tab.Screen name="Hosts Navigator" component={HostsNavigationProvider} />
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   );
