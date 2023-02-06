@@ -5,7 +5,7 @@ export default function ConfigItem(props) {
 
     return (
         <TouchableOpacity className="w-11/12 rounded-md flex-row space-x-1 items-center bg-sky-400 mt-2">
-            <View className="flex-row w-9/12 items-center">
+            <View className="flex-row w-9/12 items-center"> 
                 <View className="ml-3">
                     <Icon name="rocket" size={30} color="white" />
                 </View>
