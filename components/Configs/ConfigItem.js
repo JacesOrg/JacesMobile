@@ -5,7 +5,7 @@ export default function ConfigItem(props) {
 
     return (
         <TouchableOpacity className="w-11/12 rounded-md flex-row space-x-1 items-center bg-sky-400 mt-2">
-            <View className="flex-row w-9/12 items-center"> 
+            <View className="flex-row w-9/12 items-center">
                 <View className="ml-3">
                     <Icon name="rocket" size={30} color="white" />
                 </View>
@@ -16,11 +16,11 @@ export default function ConfigItem(props) {
             </View>
             <View className="flex-row items-center pl-4">
                 <View className="rounded-full bg-green-400 w-5 h-5" />
-                <TouchableOpacity className="ml-7">
+                <TouchableOpacity className="ml-7 h-full w-full" onPress={()=>props.btnPress(props.name)}>
                     <Icon name="ellipsis-v" size={35} color="white"/>
                 </TouchableOpacity>
             </View>
         </TouchableOpacity>
     )
-    
+
 };

@@ -12,29 +12,22 @@ const BackButton = () => {
         <Text style={st.txt} className="text-xl text-white">{'<'} Back</Text>
   </TouchableOpacity>)}
 
-const AddButton = (props) => {
-  return (
-    <TouchableOpacity
-      onPress={()=>props.onPress}
-      className=" w-16 ml-5"
-    >
-      <Text style={st.txt} className="text-xl text-white">+</Text>
-    </TouchableOpacity>)}
 export default function Header(props) {
 
   return (
-    <View className="flex-row w-full">
-      <View className="h-100 justify-center bg-cyan-500">
-        {props.backButton ? <BackButton /> : null }
-      </View>
-      <View className={` h-16 justify-center items-center bg-cyan-500`}>
-        <Text style={st.txt} className={`text-2xl text-white ml-14`}>
+    <View className="flex-row bg-cyan-500">
+      <View className={`h-16 flex-auto flex-row `}>
+        {props.backButton ?
+          <View className=" h-100 justify-center">
+            <BackButton />
+          </View>
+          : null }
+
+        <Text style={st.txt} className={`text-2xl text-white m-auto ${props.backButton ? 'ml-16': ''}`}>
           {props.title}
         </Text>
       </View>
-      <View className="h-100 flex justify-center bg-cyan-500">
-        {props.addButton ? <AddButton /> : null }
-      </View>
+
     </View>
   );
 }

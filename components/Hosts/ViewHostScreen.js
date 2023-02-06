@@ -1,14 +1,41 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import React from 'react';
-import { View, Text, Button, ScrollView, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import { View, Text, Button, ScrollView, StyleSheet, Alert } from "react-native";
 import Header from '../Header';
 import st from '../styles';
 import { faServer, faCircle } from '@fortawesome/free-solid-svg-icons';
 import ConfigItem from '../Configs/ConfigItem';
+import ActionDialog from "../ActionDialog";
 
 export default function ViewHostScreen(props) {
     console.log(props);
     const host = props.route.params.host;
+    const [isVisible, setIsVisible] = useState(false)
+    const [configDialogTitle, setConfigDialogTitle] = useState("")
+
+    const toggleDialog = (title) => {
+        setIsVisible(!isVisible)
+        setConfigDialogTitle(title)
+    }
+
+    const configAction = [{
+        name: 'Stop',
+        icon: 'stop',
+        color: 'bg-red-400',
+        action: ()=>{Alert.alert('Stop action', 'Are you sure you want to stop this config?')}
+    },{
+        name: 'Reload',
+        icon: 'refresh',
+        color: 'bg-yellow-500',
+        action: ()=>{Alert.alert('Reload action', 'Are you sure you want to reload this config?')}
+    },
+        {
+        name: 'View logs',
+        icon: 'th-list',
+        color: 'bg-sky-400',
+        action: ()=>{Alert.alert('View logs action', 'View logs')}
+    }]
+
     return(
         <>
         <Header title={'View Host'} backButton={true}/>
@@ -46,15 +73,21 @@ export default function ViewHostScreen(props) {
             <View className="flex mt-5">
                 <Button title='Operations' />
             </View>
-            
+
         </View>
         <Text style={st.txt} className="text-xl mt-7 ml-3">Running configs:</Text>
         <ScrollView contentContainerStyle={sts.scw}>
-                {host.configs && host.configs.map(conf=> <ConfigItem key={conf.name} {...conf} />)}
+                {host.configs && host.configs.map(conf=> <ConfigItem key={conf.name} {...conf} btnPress={toggleDialog}/>)}
         </ScrollView>
+            <ActionDialog
+              visible={isVisible}
+              closeAction={toggleDialog}
+              actions={configAction}
+              title={configDialogTitle}
+            />
         </>
     )
-    
+
 };
 
 const sts = StyleSheet.create({
