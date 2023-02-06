@@ -16,14 +16,14 @@ export default function Header(props) {
 
   return (
     <View className="flex-row bg-cyan-500">
-      <View className={`h-16 flex-auto flex-row `}>
+      <View className={`h-12 flex-auto flex-row `}>
         {props.backButton ?
           <View className=" h-100 justify-center">
             <BackButton />
           </View>
           : null }
 
-        <Text style={st.txt} className={`text-2xl text-white m-auto ${props.backButton ? 'ml-16': ''}`}>
+        <Text style={st.txt} className={`text-xl text-white m-auto ${props.backButton ? 'ml-16': ''}`}>
           {props.title}
         </Text>
       </View>

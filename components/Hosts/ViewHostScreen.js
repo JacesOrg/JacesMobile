@@ -77,7 +77,7 @@ export default function ViewHostScreen(props) {
         </View>
         <Text style={st.txt} className="text-xl mt-7 ml-3">Running configs:</Text>
         <ScrollView contentContainerStyle={sts.scw}>
-                {host.configs && host.configs.map(conf=> <ConfigItem key={conf.name} {...conf} btnPress={toggleDialog}/>)}
+                {host.configs && host.configs.map(conf=> <ConfigItem key={conf.name} config={conf} btnPress={toggleDialog}/>)}
         </ScrollView>
             <ActionDialog
               visible={isVisible}
