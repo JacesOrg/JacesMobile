@@ -1,9 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React from 'react';
-import { View, Text, Button, ScrollView } from 'react-native';
+import { View, Text, Button, ScrollView, StyleSheet } from 'react-native';
 import Header from '../Header';
 import st from '../styles';
 import { faServer, faCircle } from '@fortawesome/free-solid-svg-icons';
+import ConfigItem from '../Configs/ConfigItem';
 
 export default function ViewHostScreen(props) {
     console.log(props);
@@ -47,12 +48,18 @@ export default function ViewHostScreen(props) {
             </View>
             
         </View>
-        <ScrollView>
-            <Text style={st.txt} className="text-xl mt-7">Running configs:</Text>
-            <Text>{JSON.stringify(host.configs)}</Text>
+        <Text style={st.txt} className="text-xl mt-7 ml-3">Running configs:</Text>
+        <ScrollView contentContainerStyle={sts.scw}>
+                {host.configs && host.configs.map(conf=> <ConfigItem key={conf.name} {...conf} />)}
         </ScrollView>
         </>
     )
     
 };
+
+const sts = StyleSheet.create({
+    scw: {
+        alignItems: 'center'
+    }
+})
 
