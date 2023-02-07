@@ -1,5 +1,5 @@
 import { TouchableOpacity, View, Text, Button } from "react-native";
-import Icon from 'react-native-vector-icons/FontAwesome'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from "@react-navigation/native";
 
 export default function ConfigItem(props) {
@@ -10,7 +10,7 @@ export default function ConfigItem(props) {
         >
             <View className="flex-row w-9/12 items-center">
                 <View className="ml-3">
-                    <Icon name="rocket" size={30} color="white" />
+                    <Icon name={props.config.icon} size={30} color="white" />
                 </View>
                 <View className="ml-5 mt-3 mb-3">
                     <Text className="text-xl text-white">{props.config.name}</Text>

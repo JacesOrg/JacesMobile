@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {TouchableOpacity, Text, StyleSheet, View} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faServer, faCircle} from '@fortawesome/free-solid-svg-icons';
 import { useNavigation } from '@react-navigation/native';
+import Context from '../Context';
 
 export default function HostItem(props) {
   const navigation = useNavigation();
-  const viewHost = () => navigation.navigate('View Host' , {host: props.host})
+  const contextObj = useContext(Context)
+  const viewHost = () => {
+    contextObj.setCurrentHost(props.host)
+    navigation.navigate('View Host' , {host: props.host})
+  }
   return (
     <TouchableOpacity className="bg-slate-500 w-11/12 mb-1 mt-2 h-28 flex-row rounded-md"
     onPress={viewHost}>
@@ -45,7 +50,6 @@ export default function HostItem(props) {
 const st = StyleSheet.create({
   txt: {
     fontFamily: 'Oswald-Medium',
-    wordBreak: 'normal',
   },
   logo: {
     fontFamily: 'Oswald-SemiBold',

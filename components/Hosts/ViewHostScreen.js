@@ -1,15 +1,19 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import React, { useState } from "react";
-import { View, Text, Button, ScrollView, StyleSheet, Alert } from "react-native";
+import React, { useContext, useState } from "react";
+import { View, Text, Button, ScrollView, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import Header from '../Header';
 import st from '../styles';
 import { faServer, faCircle } from '@fortawesome/free-solid-svg-icons';
 import ConfigItem from '../Configs/ConfigItem';
 import ActionDialog from "../ActionDialog";
+import Context from '../Context';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ViewHostScreen(props) {
     console.log(props);
-    const host = props.route.params.host;
+    const contextObj = useContext(Context)
+    const host = contextObj.currentHost;
+    const navigation = useNavigation()
     const [isVisible, setIsVisible] = useState(false)
     const [configDialogTitle, setConfigDialogTitle] = useState("")
 
@@ -85,6 +89,13 @@ export default function ViewHostScreen(props) {
               actions={configAction}
               title={configDialogTitle}
             />
+            <TouchableOpacity 
+                style={{elevation: 2}}
+                className="absolute bottom-4 left-1/3 ml-5 rounded-full bg-indigo-600 w-20 h-20 items-center justify-center"
+                onPress={()=>navigation.navigate("Choose config")}
+            >
+                <Text className="text-4xl text-white">+</Text>
+            </TouchableOpacity>
         </>
     )
 
