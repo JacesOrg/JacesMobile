@@ -35,15 +35,19 @@ export default function ConfigList(params) {
             <ScrollView contentContainerStyle={st.scv}>
                 {configList && configList.map(conf=>(
                     <TouchableOpacity 
-                        className="bg-sky-400 w-10/12 ml-10 justify-center items-center p-6 rounded-xl flex-row" 
+                        className="bg-sky-400 w-10/12 ml-10 justify-center items-center p-6 rounded-xl flex-row mb-5" 
                         style={{elevation: 2}}
                         onPress={()=>proceedToConf(conf._id)}
                     >
-                        <Icon name={conf.icon} size={40} />
-                        <Text className="text-2xl text-white ml-5">{conf.name}</Text>
+                        <View className=" items-start">
+                            <Icon name={conf.icon} size={40}/>
+                        </View>
+                        <View className="items-start">
+                            <Text className="text-xl text-white ml-5">{conf.name}</Text>
+                        </View>
                     </TouchableOpacity>
                 ))}
-                
+
             </ScrollView>
         </View>
         

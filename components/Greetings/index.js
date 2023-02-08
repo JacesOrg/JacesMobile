@@ -30,7 +30,7 @@ export default function Greetings() {
           isVisible={true}
           type={'Wave'}
           size={50}
-          className="text-cyan-500"
+          style={{color: "rgb(6,182,212)"}}
         />
       </View>
     </View>
