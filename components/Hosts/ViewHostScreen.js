@@ -54,7 +54,7 @@ export default function ViewHostScreen(props) {
                     />
                 </View>
                 <View className="w-60 ml-5">
-                    <Text className="text-4xl text-white" style={st.txt}>
+                    <Text className="text-2xl text-white" style={st.txt}>
                     {host.host_id}
                     </Text>
                     <View className="flex-row items-center mt-1">

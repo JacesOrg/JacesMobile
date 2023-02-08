@@ -33,6 +33,7 @@ const App = () => {
   const refresh = () =>{
     AsyncStorage.getItem('token').then(async storageToken => {
       const hostList = await getHosts(storageToken);
+      console.log(hostList);
       setHosts(hostList)
       setToken(storageToken)
       for (let host of hostList) {
