@@ -1,9 +1,30 @@
 import { TouchableOpacity, View, Text, Button } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
 
 export default function ConfigItem(props) {
+    console.log(props.config);
     const navigation = useNavigation()
+    const [containerStatus, setContainerStatus] = useState('')
+    const offline = "bg-slate-400"
+    const online = "bg-green-400"
+    const error = "bg-red-400"
+
+    useEffect(()=>{
+        switch (props.config.status.toUpperCase()){
+            case "RUNNING":
+                setContainerStatus(online)
+                break
+            case "OFFLINE":
+                setContainerStatus(offline)
+                break
+            default:
+                setContainerStatus(error)
+                break
+            
+        }
+    }, [props.config])
     return (
         <TouchableOpacity className="w-11/12 rounded-md flex-row space-x-1 items-center bg-sky-400 mt-2"
           onPress={()=>navigation.navigate('View Config', {config: props.config})}
@@ -18,8 +39,8 @@ export default function ConfigItem(props) {
                 </View>
             </View>
             <View className="flex-row items-center pl-4">
-                <View className="rounded-full bg-green-400 w-5 h-5" />
-                <TouchableOpacity className="ml-7 h-full w-full" onPress={()=>props.btnPress(props.config.name)}>
+                <View className={`rounded-full ${containerStatus} w-5 h-5`} />
+                <TouchableOpacity className="ml-7 h-full w-full" onPress={()=>props.btnPress(props.config.name, props.config.id)}>
                     <Icon name="ellipsis-v" size={35} color="white"/>
                 </TouchableOpacity>
             </View>

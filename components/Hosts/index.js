@@ -4,6 +4,7 @@ import HostsListScreen from './HostListScreen';
 import ViewHostScreen from './ViewHostScreen';
 import ConfigViewScreen from "../Configs/ConfigViewScreen";
 import ConfigList from "../Configs"
+import LogViewer from '../LogViewer';
 
 const Stack = createNativeStackNavigator()
 
@@ -14,6 +15,7 @@ export default function HostsNavigationProvider() {
       <Stack.Screen name="View Config" component={ConfigViewScreen} />
       <Stack.Screen name="View Host" component={ViewHostScreen} />
       <Stack.Screen name="Choose config" component={ConfigList} />
+      <Stack.Screen name="View Logs" component={LogViewer} />
 
     </Stack.Navigator>
   )

@@ -8,6 +8,8 @@ import ConfigItem from '../Configs/ConfigItem';
 import ActionDialog from "../ActionDialog";
 import Context from '../Context';
 import { useNavigation } from '@react-navigation/native';
+import {sendAction, unregisterHost, getLogs} from '../../lib/api'
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
 
 export default function ViewHostScreen(props) {
     console.log(props);
@@ -15,29 +17,104 @@ export default function ViewHostScreen(props) {
     const host = contextObj.currentHost;
     const navigation = useNavigation()
     const [isVisible, setIsVisible] = useState(false)
+    const [hostDialogVisible, setHostDialogVisible] = useState(false)
     const [configDialogTitle, setConfigDialogTitle] = useState("")
+    const [currentConf, setCurrentConf] = useState("")
 
-    const toggleDialog = (title) => {
+    const toggleDialog = (title, conf_id) => {
         setIsVisible(!isVisible)
         setConfigDialogTitle(title)
+        setCurrentConf(conf_id);
+    }
+    const toggleHostDialog = (title) => {
+        setHostDialogVisible(!hostDialogVisible)
+        setConfigDialogTitle(host.host_id)
     }
 
     const configAction = [{
         name: 'Stop',
         icon: 'stop',
         color: 'bg-red-400',
-        action: ()=>{Alert.alert('Stop action', 'Are you sure you want to stop this config?')}
+        action: async ()=>{
+            Alert.alert('Stop', 'Are you sure you want to stop this Config?', [{
+                text: 'Cancel',
+                onPress: async () => console.log("Canceled"),
+                style: 'cancel',
+              },
+              {
+                text: 'OK', 
+                onPress: async () => {
+                    await sendAction(host.host_id, 'STOP', currentConf, contextObj.token)
+                    toggleDialog('', '')                    
+                }
+            }])
+            
+        }
     },{
-        name: 'Reload',
+        name: 'RESTART',
         icon: 'refresh',
         color: 'bg-yellow-500',
-        action: ()=>{Alert.alert('Reload action', 'Are you sure you want to reload this config?')}
+        action: async ()=>{
+            Alert.alert('Restart', 'Are you sure you want to restart this Config?', [{
+                text: 'Cancel',
+                onPress: async () => console.log("Canceled"),
+                style: 'cancel',
+              },
+              {
+                text: 'OK', 
+                onPress: async () => {
+                    await sendAction(host.host_id, 'RESTART', currentConf, contextObj.token)
+                    toggleDialog('', '')                    
+                }
+            }])
+        }
     },
         {
         name: 'View logs',
         icon: 'th-list',
         color: 'bg-sky-400',
-        action: ()=>{Alert.alert('View logs action', 'View logs')}
+        action: async ()=>{
+            try {
+                const logs = await getLogs(currentConf, contextObj.token)
+                toggleDialog('', '') 
+                if(!logs)
+                    Toast.show({
+                        text1: "No logs found",
+                        type: 'info'
+                    })
+                else
+                    navigation.navigate("View Logs", {log: logs.log})
+            } catch (error) {
+                Toast.show({
+                    text1: 'Failed to receive logs',
+                    text2: error,
+                    type: 'error'
+                })
+            }
+            
+            
+        }
+    }]
+
+    const hostActions = [{
+        name: "Delete",
+        icon: "trash",
+        color: "bg-red-400",
+        action: ()=>{Alert.alert('Delete', 'Are you sure you want to delete this Host?', [{
+            text: 'Cancel',
+            onPress: async () => console.log("Canceled"),
+            style: 'cancel',
+          },
+          {
+            text: 'OK', 
+            onPress: async () => {
+                await unregisterHost(host._id, contextObj.token)
+                contextObj.refresh()
+                navigation.goBack()
+                
+            }
+        }])
+        }
     }]
 
     return(
@@ -67,15 +144,15 @@ export default function ViewHostScreen(props) {
                     </Text>
                     </View>
                     <Text
-                    numberOfLines={2}
-                    className="text-base text-white mt-1"
-                    style={st.txt}>
-                    {host.info}
+                        numberOfLines={2}
+                        className="text-base text-white mt-1"
+                        style={st.txt}>
+                        {host.info}
                     </Text>
                 </View>
             </View>
             <View className="flex mt-5">
-                <Button title='Operations' />
+                <Button title='Operations' onPress={toggleHostDialog}/>
             </View>
 
         </View>
@@ -96,6 +173,12 @@ export default function ViewHostScreen(props) {
             >
                 <Text className="text-4xl text-white">+</Text>
             </TouchableOpacity>
+            <ActionDialog 
+                    visible={hostDialogVisible}
+                    closeAction={toggleHostDialog}
+                    actions={hostActions}
+                    title={host.host_id}
+            />
         </>
     )
 
