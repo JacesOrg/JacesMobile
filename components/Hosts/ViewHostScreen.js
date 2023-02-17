@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { View, Text, Button, ScrollView, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import Header from '../Header';
 import st from '../styles';
@@ -8,11 +8,12 @@ import ConfigItem from '../Configs/ConfigItem';
 import ActionDialog from "../ActionDialog";
 import Context from '../Context';
 import { useNavigation } from '@react-navigation/native';
-import {sendAction, unregisterHost, getLogs} from '../../lib/api'
+import {sendAction, unregisterHost, getLogs, getActionStatus} from '../../lib/api'
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import Loading from '../Loading';
+import ConfigList from '../Configs';
 
 export default function ViewHostScreen(props) {
-    console.log(props);
     const contextObj = useContext(Context)
     const host = contextObj.currentHost;
     const navigation = useNavigation()
@@ -20,6 +21,8 @@ export default function ViewHostScreen(props) {
     const [hostDialogVisible, setHostDialogVisible] = useState(false)
     const [configDialogTitle, setConfigDialogTitle] = useState("")
     const [currentConf, setCurrentConf] = useState("")
+    const [currentAction, setCurrentAction] = useState("")
+    const [loadingComplete, setLoadingComplete] = useState(false)
 
     const toggleDialog = (title, conf_id) => {
         setIsVisible(!isVisible)
@@ -31,7 +34,61 @@ export default function ViewHostScreen(props) {
         setConfigDialogTitle(host.host_id)
     }
 
+    useEffect(() => {
+        let counter = 0
+        if(loadingComplete){
+            const intrvl = setInterval(async () => {
+                try{
+                    counter++
+                      if(counter > 30){
+                        Toast.show({ text1: "Timeout receiving results of action. Please refresh host", type: 'error'})
+                        clearInterval(intrvl)
+                        setLoadingComplete(false)
+                      }else{
+                        console.log(currentAction);
+                        const resp = await getActionStatus(currentAction, contextObj.token)
+                        console.log(resp);
+                        
+                        if(resp.status !== 'NEW' && resp.status !== 'FAILED'){
+                            Toast.show({ text1: "Successfully performed action", type: 'success'})
+                            clearInterval(intrvl)
+                            setLoadingComplete(false)
+                        }else if(resp.status == 'FAILED') {
+                            Toast.show({ text1: "Action failed", text2: resp.message, type: 'error'})
+                            clearInterval(intrvl)
+                            setLoadingComplete(false)
+                        }
+                      }
+                }catch(e){
+                    console.log(e);
+                }
+            }, 1000)
+        }
+    }, [loadingComplete])
+    
+
     const configAction = [{
+        name: 'Start',
+        icon: 'play',
+        color: 'bg-green-400',
+        action: async ()=>{
+            Alert.alert('Stop', 'Are you sure you want to stop this Config?', [{
+                text: 'Cancel',
+                onPress: async () => console.log("Canceled"),
+                style: 'cancel',
+              },
+              {
+                text: 'OK', 
+                onPress: async () => {
+                    const actionId = await sendAction(host.host_id, 'START', currentConf, contextObj.token)
+                    setCurrentAction(actionId)
+                    setLoadingComplete(true)
+                    toggleDialog('', '')                    
+                }
+            }])
+            
+        }
+    },{
         name: 'Stop',
         icon: 'stop',
         color: 'bg-red-400',
@@ -44,7 +101,9 @@ export default function ViewHostScreen(props) {
               {
                 text: 'OK', 
                 onPress: async () => {
-                    await sendAction(host.host_id, 'STOP', currentConf, contextObj.token)
+                    const actionId = await sendAction(host.host_id, 'STOP', currentConf, contextObj.token)
+                    setCurrentAction(actionId)
+                    setLoadingComplete(true)
                     toggleDialog('', '')                    
                 }
             }])
@@ -63,7 +122,9 @@ export default function ViewHostScreen(props) {
               {
                 text: 'OK', 
                 onPress: async () => {
-                    await sendAction(host.host_id, 'RESTART', currentConf, contextObj.token)
+                    const actionId = await sendAction(host.host_id, 'RESTART', currentConf, contextObj.token)
+                    setCurrentAction(actionId)
+                    setLoadingComplete(true)
                     toggleDialog('', '')                    
                 }
             }])
@@ -179,6 +240,7 @@ export default function ViewHostScreen(props) {
                     actions={hostActions}
                     title={host.host_id}
             />
+            <Loading visible={loadingComplete} text={"Loading actions"}/>
         </>
     )
 

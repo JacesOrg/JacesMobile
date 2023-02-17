@@ -6,7 +6,7 @@ import RNTextArea from "@freakycoder/react-native-text-area"
 import { useNavigation } from "@react-navigation/native";
 import Context from "../Context";
 import Toast from 'react-native-toast-message';
-import { updateHost } from "../../lib/api";
+import { createConfig, updateConfig, updateHost } from "../../lib/api";
 
 export default function ConfigViewScreen(props) {
 
@@ -24,27 +24,28 @@ export default function ConfigViewScreen(props) {
 
   const saveConfig = async () =>{
     console.log(contextObj);
-    const currentHost = contextObj.currentHost
-    const updateObj = {
-      id: config.id,
-      name: name,
-      params: params.split('\n'),
-      icon: config.icon,
-      image: config.image
-    }
-    if(isNew){
-      currentHost.configs.push(updateObj)
-    }else
-      for(let i=0; i < currentHost.configs.length; i++)
-        if(updateObj.id == currentHost.configs[i].id)
-          currentHost.configs[i] = updateObj;
-    console.log('To update');
-    console.log(updateObj);
-    console.log('Updated host');
-    console.log(currentHost);
     try {
-      console.log(contextObj.token);
-      await updateHost(contextObj.token, currentHost)
+      const currentHost = contextObj.currentHost
+      const updateObj = {
+        id: config.id,
+        name: name,
+        params: params.split('\n'),
+        icon: config.icon,
+        image: config.image,
+        
+      }
+      if(isNew){{
+        currentHost.configs.push(updateObj)
+        updateObj.status = 'NEW'
+        await createConfig(updateObj, currentHost._id, currentHost.host_id, contextObj.token)
+      }
+      }else{
+        for(let i=0; i < currentHost.configs.length; i++)
+          if(updateObj.id == currentHost.configs[i].id)
+            currentHost.configs[i] = updateObj;
+        updateObj.status = 'UPDATE'
+        await updateConfig(updateObj, currentHost._id, currentHost.host_id, contextObj.token)
+      }
       contextObj.setCurrentHost(currentHost)
       contextObj.refresh()
       Toast.show({type: 'success', text1: 'Successfully saved'})

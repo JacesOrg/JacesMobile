@@ -4,7 +4,6 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 
 export default function ConfigItem(props) {
-    console.log(props.config);
     const navigation = useNavigation()
     const [containerStatus, setContainerStatus] = useState('')
     const offline = "bg-slate-400"
@@ -12,16 +11,19 @@ export default function ConfigItem(props) {
     const error = "bg-red-400"
 
     useEffect(()=>{
-        switch (props.config.status.toUpperCase()){
-            case "RUNNING":
-                setContainerStatus(online)
-                break
-            case "OFFLINE":
-                setContainerStatus(offline)
-                break
-            default:
-                setContainerStatus(error)
-                break
+        if(!props.config.status)
+            setContainerStatus(offline)
+        else
+            switch (props.config.status.toUpperCase()){
+                case "RUNNING":
+                    setContainerStatus(online)
+                    break
+                case "OFFLINE":
+                    setContainerStatus(offline)
+                    break
+                default:
+                    setContainerStatus(error)
+                    break
             
         }
     }, [props.config])

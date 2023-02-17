@@ -7,7 +7,6 @@ export default function ActionDialog(props) {
   useEffect(()=>{
     setIsVisible(props.visible)
   }, [props.visible])
-  console.log(props);
   const handleClose = () => {
     setIsVisible(false)
     props.closeAction()
