@@ -11,11 +11,12 @@ export default function ConfigItem(props) {
     const error = "bg-red-400"
 
     useEffect(()=>{
+        console.log('Container status:', props.config)
         if(!props.config.status)
             setContainerStatus(offline)
         else
             switch (props.config.status.toUpperCase()){
-                case "RUNNING":
+                case "DEPLOYED":
                     setContainerStatus(online)
                     break
                 case "OFFLINE":

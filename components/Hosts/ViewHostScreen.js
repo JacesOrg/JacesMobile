@@ -11,7 +11,6 @@ import { useNavigation } from '@react-navigation/native';
 import {sendAction, unregisterHost, getLogs, getActionStatus} from '../../lib/api'
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import Loading from '../Loading';
-import ConfigList from '../Configs';
 
 export default function ViewHostScreen(props) {
     const contextObj = useContext(Context)
@@ -199,9 +198,9 @@ export default function ViewHostScreen(props) {
                     <Text className="text-xl text-white mr-3" style={st.txt}>
                         Status:
                     </Text>
-                    <FontAwesomeIcon icon={faCircle} size={8} color="lightgreen" />
+                    <FontAwesomeIcon icon={faCircle} size={8} color={host.status == "ONLINE" ? "lightgreen" : "red"} />
                     <Text className="text-xl text-white ml-1" style={st.txt}>
-                        Online
+                        {host.status ? host.status : 'OFFLINE'}
                     </Text>
                     </View>
                     <Text

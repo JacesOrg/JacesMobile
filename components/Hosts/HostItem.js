@@ -31,9 +31,9 @@ export default function HostItem(props) {
           <Text className="text-sm text-white mr-3" style={st.txt}>
             Status:
           </Text>
-          <FontAwesomeIcon icon={faCircle} size={8} color="lightgreen" />
+          <FontAwesomeIcon icon={faCircle} size={8} color={props.host.status == "ONLINE" ? "lightgreen" : "red"} />
           <Text className="text-sm text-white ml-1" style={st.txt}>
-            Online
+            {props.host.status ? props.host.status : 'OFFLINE'}
           </Text>
         </View>
         <Text
